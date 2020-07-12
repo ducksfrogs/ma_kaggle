@@ -19,4 +19,8 @@ numericVarNames <- names(numericVars)
 cat("there are ", length(numericVars), "numeric variables")
 
 all_numVar <- all[, numericVars]
-
+cor_numVar <- cor(all_numVar, use = 'pairwise.complete.obs')
+cor_sorted <- as.matrix(sort(cor_numVar[, 'SalePrice'], decreasing = TRUE))
+CorHigh <- names(which(apply(cor_sorted, 1, function(x) abs(x)>0.5)))
+cor_numVar <- cor_numVar[CorHigh, CorHigh]
+corrplot.mixed(cor_numVar, tl.col = 'black', tl.pos = 'lt')
