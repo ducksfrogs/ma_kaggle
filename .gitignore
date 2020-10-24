@@ -78,4 +78,5 @@ ipython_config.py
 #data file
 
 *.csv
+*.zip
 
