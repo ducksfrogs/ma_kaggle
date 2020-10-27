@@ -87,3 +87,16 @@ matrix.sort_values(cols, inplace=True)
 time.time() - ts
 
 train['revenue'] = train['item_price'] * train['item_cnt_day']
+
+ts = time.time()
+group = train.groupby(['date_block_num', 'shop_id', 'item_id']).agg({'item_cnt_day':['sum']})
+group.columns = ['item_cnt_month']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=cols, how='left')
+matrix['item_cnt_month'] = (matrix['item_cnt_month']
+                                    .fillna(0)
+                                    .clip(0,20)
+                                    .astype(np.float16))
+
+time.time() - ts
