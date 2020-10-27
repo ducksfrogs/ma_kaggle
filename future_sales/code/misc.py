@@ -39,3 +39,12 @@ sns.boxplot(x=train.item_price)
 
 train = train[train.item_price<100000]
 train = train[train.item_cnt_day<1001]
+
+train.loc[train.shop_id == 0, 'shop_id'] = 57
+test.loc[test.shop_id == 0, 'shop_id'] =57
+
+train.loc[train.shop_id == 1, 'shop_id'] = 58
+test.loc[test.shop_id == 1, 'shop_id'] = 58
+
+train.loc[train.shop_id == 10, 'shop_id'] == 11
+test.loc[test.shop_id == 10, 'shop_id'] == 11
