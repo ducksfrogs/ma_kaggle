@@ -132,10 +132,24 @@ def lag_feature(df, lags, col):
     tmp = df[['date_block_num', 'shop_id', 'item_id', col]]
     for i in lags:
         shifted = tmp.copy()
+        shifted.columns = ['date_block_num','shop_id', 'item_id', col+'_lag_'+str(i)]
         shifted['date_block_num'] += i
         df = pd.merge(df, shifted, on=['date_block_num', 'shop_id', 'item_id'], how='left')
-        return df
+    return df
 
 ts = time.time()
-matrix = lag_feature(matrix, [1,2,3,,6,12], 'item_cnt_month')
+matrix = lag_feature(matrix, [1,2,3,6,12], 'item_cnt_month')
 time.time() - ts
+
+
+#Mean encodedt features
+
+ts = time.time()
+group = matrix.groupby(['date_block_num']).agg({'item_cnt_month': ['mean']})
+group.columns = ['date_avg_item_cnt']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['date_block_num'], how='left')
+matrix['date_avg_item_cnt'] = matrix['date_avg_item_cnt'].astype(np.float16)
+matrix = lag_feature(matrix, [1], 'date_avg_item_cnt')
+matrix.drop(['date_avg_item_cnt'], axis=1, inplace=True)
