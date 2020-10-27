@@ -79,4 +79,5 @@ ipython_config.py
 
 *.csv
 *.zip
+.idea/
 
