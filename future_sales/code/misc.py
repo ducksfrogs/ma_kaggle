@@ -50,7 +50,7 @@ train.loc[train.shop_id == 10, 'shop_id'] = 11
 test.loc[test.shop_id == 10, 'shop_id'] = 11
 
 
-shops.loc[shops.shop_name == 'Сергиев Посад ТЦ "7Я"', 'shop_id'] = 'СергиевПосад ТЦ "7Я"'
+shops.loc[shops.shop_name == 'Сергиев Посад ТЦ "7Я"', 'shop_name'] = 'СергиевПосад ТЦ "7Я"'
 shops['city'] = shops['shop_name'].str.split(' ').map(lambda x:  x[0])
 shops.loc[shops.city == '!Якутск', 'city'] = 'Якутск'
 shops['city_code'] = LabelEncoder().fit_transform(shops['city'])
@@ -107,11 +107,21 @@ time.time() - ts
 
 test['date_block_num'] = 34
 test['date_block_num'] = test['date_block_num'].astype(np.int8)
-test['shop_id'] =test['shop_id'].astype(np.int8t)
+test['shop_id'] =test['shop_id'].astype(np.int8)
 test['item_id'] = test['item_id'].astype(np.int16)
 
 ts = time.time()
-
 matrix = pd.concat([matrix, test], ignore_index=True,sort=False,keys=cols)
 matrix.fillna(0, inplace=True)
+time.time() - ts
+
+
+ts = time.time()
+matrix = pd.merge(matrix, shops, on=['shop_id'], how='left')
+matrix = pd.merge(matrix, items, on=['item_id'], how='left')
+matrix = pd.merge(matrix, cats, on=['item_category_id'], how='left')
+matrix['city_code'] = matrix['city_code'].astype(np.int8)
+matrix['item_category_id'] = matrix['item_category_id'].astype(np.int8)
+matrix['type_code'] = matrix['type_code'].astype(np.int8)
+matrix['subtype_code'] = matrix['subtype_code'].astype(np.int8)
 time.time() - ts
