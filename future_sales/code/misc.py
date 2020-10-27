@@ -100,3 +100,18 @@ matrix['item_cnt_month'] = (matrix['item_cnt_month']
                                     .astype(np.float16))
 
 time.time() - ts
+
+
+#Test set
+
+
+test['date_block_num'] = 34
+test['date_block_num'] = test['date_block_num'].astype(np.int8)
+test['shop_id'] =test['shop_id'].astype(np.int8t)
+test['item_id'] = test['item_id'].astype(np.int16)
+
+ts = time.time()
+
+matrix = pd.concat([matrix, test], ignore_index=True,sort=False,keys=cols)
+matrix.fillna(0, inplace=True)
+time.time() - ts
