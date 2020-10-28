@@ -238,3 +238,8 @@ matrix['date_city_avg_item_cnt'] = matrix['date_city_avg_item_cnt'].astype(np.fl
 matrix = lag_feature(matrix, [1], 'date_cat_avg_item_cnt')
 matrix.drop(['date_cat_avg_item_cnt'], axis=1, inplace=True)
 time.time() - ts
+
+ts = time.time()
+group = matrix.groupby(['date_block_num','item_id', 'city_code']).agg({'item_cnt_month':['mean']})
+group.columns = ['date_item_city_avg_item_cnt']
+group.reset_index(inplace=True)
