@@ -214,3 +214,8 @@ matrix['date_shop_type_avg_item_cnt'] = matrix['date_shop_type_avg_item_cnt'].as
 matrix = lag_feature(matrix, [1], 'date_shop_avg_item_cnt')
 matrix.drop(['date_shop_type_avg_item_cnt'], axis=1, inplace=True)
 time.time() -ts
+
+ts = time.time()
+
+group = matrix.groupby(['date_block_num','shop_id', 'subtype_code']).agg({'item_cnt_month':['mean']})
+group.columns = ['date_shop_subtype_avg_item_cnt']
