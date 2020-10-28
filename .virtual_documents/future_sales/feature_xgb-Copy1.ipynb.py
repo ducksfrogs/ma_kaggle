@@ -78,10 +78,46 @@ len(list(set(test.item_id) - set(test.item_id).intersection(set(train.item_id)))
 train['date_block_num'].unique()
 
 
+cols = ['date_block_num', 'shop_id', 'item_id']
+
+
+
+sales = train[train.date_block_num==1]
+
+
+matrix = []
+
+
+matrix.append(np.array(list(product([3],sales.shop_id.unique(), sales.item_id.unique()))))
+
+
+matrix
+
+
+np.vstack(matrix)
+
+
+matrix = pd.DataFrame(np.vstack(matrix), columns=cols)
+
+
+matrix
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ts = time.time()
 matrix = []
-cols = ['date_block_num', 'shop_id', 'item_id']
-for i in range(34):
+kfor i in range(34):
     sales = train[train.date_block_num==i]
     matrix.append(np.array(list(product([i], sales.shop_id.unique(), sales.item_id.unique())), dtype='int16'))
 
