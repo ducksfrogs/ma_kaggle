@@ -153,3 +153,19 @@ matrix = pd.merge(matrix, group, on=['date_block_num'], how='left')
 matrix['date_avg_item_cnt'] = matrix['date_avg_item_cnt'].astype(np.float16)
 matrix = lag_feature(matrix, [1], 'date_avg_item_cnt')
 matrix.drop(['date_avg_item_cnt'], axis=1, inplace=True)
+
+time.time() - ts
+
+
+ts = time.time()
+group = matrix.groupby(['date_block_num','item_id']).agg({'item_cnt_month':['mean']})
+group.colmns = ['date_item_avg_item_cnt']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['date_block_num','item_id'], how='left')
+matrix['date_item_avg_item_cnt'] = matrix['date_item_avg_item_cnt'].astype(np.float16)
+matrix = lag_feature(matrix,[1,2,3,6,12], 'date_item_avg_item_cnt')
+matrix.drop(['date_item_avg_item_cnt'], axis=1, inplace=True)
+time.time() -ts
+
+ts = time.time()
