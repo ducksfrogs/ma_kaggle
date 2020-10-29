@@ -286,3 +286,17 @@ matrix = pd.merge(matrix, group, on=['item_id'], how='left')
 matrix['item_avg_item_price'] = matrix['item_avg_item_price'].astype(np.float16)
 
 group = train.groupby(['date_block_num','item_id']).agg({'item_price':['mean']})
+group.columns = ['date_item_avg_item_price']
+group.reset_index(inplace=True)
+
+matrix= pd.merge(matrix, group, on=['date_block_num','item_id'], how='left')
+matrix['date_item_avg_item_price'] = matrix['date_item_avg_item_price'].astype(np.float16)
+lags = [1,2,3,4,5,6]
+matrix = lag_feature(matrix, lags, 'date_item_avg_item_price')
+
+for i in lags:
+    matrix['delta_price_lag_'+str(i)] = \
+    (matrix['date_item_avg_item_price_lag_'+str(i)] - matrix['item_avg_item_price']) / matrix['item_avg_item_price']
+
+def select_trend(row):
+    
