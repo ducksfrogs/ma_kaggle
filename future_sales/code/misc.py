@@ -299,4 +299,17 @@ for i in lags:
     (matrix['date_item_avg_item_price_lag_'+str(i)] - matrix['item_avg_item_price']) / matrix['item_avg_item_price']
 
 def select_trend(row):
-    
+    if row['delta_price_lag_'+str(i)]:
+        return row['delta_price_lag_'+str(i)]
+    return 0
+
+matrix['delta_price_lag'] = matrix.apply(select_trend, axis=1)
+matrix['delta_price_lag'] = matrix['delta_price_lag'].astype(np.float16)
+matrix['delta_price_lag'].fillna(0, inplace=True)
+
+fetures_to_drop = ['item_avg_item_price','date_item_avg_item_price']
+for i in lags:
+    fetures_to_drop += ['date_item_avg_item_price_lag_'+str(i)]
+    fetures_to_drop += ['delta_price_lag_'+str(i)]
+
+matrix.drop(fetures_to_drop, axis=1, inplace=True)    
