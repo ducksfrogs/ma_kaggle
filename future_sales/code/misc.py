@@ -312,4 +312,18 @@ for i in lags:
     fetures_to_drop += ['date_item_avg_item_price_lag_'+str(i)]
     fetures_to_drop += ['delta_price_lag_'+str(i)]
 
-matrix.drop(fetures_to_drop, axis=1, inplace=True)    
+matrix.drop(fetures_to_drop, axis=1, inplace=True)
+
+time.time() - ts
+
+#Last month shop revenue Trend
+
+ts = time.time()
+group = train.groupby(['date_block_num','shop_id']).agg({'revenue':['sum']}))
+group.columns = ['date_shop_revenue']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['date_block_num', 'shop_id'], how='left')
+matrix['date_shop_revenue'] = matrix['date_shop_revenue'].astype(np.float32)
+
+group = group.groupby(['shop_id'])
