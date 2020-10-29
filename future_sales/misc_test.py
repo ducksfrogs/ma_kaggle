@@ -24,7 +24,7 @@ items = pd.read_csv('../input/items.csv')
 shops = pd.read_csv('../input/shops.csv')
 cats = pd.read_csv('../input/item_categories.csv')
 train = pd.read_csv('../input/sales_train.csv')
-test = pd.read_csv('../input/test.csv').set_index('Id')
+test = pd.read_csv('../input/test.csv').set_index('ID')
 
 plt.figure(figsize=(10,4))
 plt.xlim(-100, 3000)
@@ -309,4 +309,6 @@ for i in lags:
     fetures_to_drop += ['date_item_avg_item_price_lag_'+str(i)]
     fetures_to_drop += ['delta_price_lag_'+str(i)]
 
-matrix.drop(fetures_to_drop, axis=1, inplace=True)    
+matrix.drop(fetures_to_drop, axis=1, inplace=True)
+
+time.time() - ts
