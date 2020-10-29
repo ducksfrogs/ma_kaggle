@@ -211,7 +211,7 @@ group.reset_index(inplace=True)
 
 matrix = pd.merge(matrix, group, on=['date_block_num', 'shop_id','type_code'],how='left' )
 matrix['date_shop_type_avg_item_cnt'] = matrix['date_shop_type_avg_item_cnt'].astype(np.float16)
-matrix = lag_feature(matrix, [1], 'date_shop_avg_item_cnt')
+matrix = lag_feature(matrix, [1], 'date_shop_type_avg_item_cnt')
 matrix.drop(['date_shop_type_avg_item_cnt'], axis=1, inplace=True)
 time.time() -ts
 
@@ -221,7 +221,7 @@ group = matrix.groupby(['date_block_num','shop_id', 'subtype_code']).agg({'item_
 group.columns = ['date_shop_subtype_avg_item_cnt']
 group.reset_index(inplace=True)
 
-matrix = pd.merge(matrix, group, on=['date_block_num','subtype_code'], how='left')
+matrix = pd.merge(matrix, group, on=['date_block_num','shop_id','subtype_code'], how='left')
 matrix['date_shop_subtype_avg_item_cnt'] = matrix['date_shop_subtype_avg_item_cnt'].astype(np.float16)
 matrix = lag_feature(matrix, [1], 'date_shop_subtype_avg_item_cnt')
 matrix.drop(['date_shop_subtype_avg_item_cnt'], axis=1, inplace=True)
@@ -235,11 +235,54 @@ group.reset_index(inplace=True)
 
 matrix  = pd.merge(matrix, group, on=['date_block_num','city_code'], how='left')
 matrix['date_city_avg_item_cnt'] = matrix['date_city_avg_item_cnt'].astype(np.float16)
-matrix = lag_feature(matrix, [1], 'date_cat_avg_item_cnt')
-matrix.drop(['date_cat_avg_item_cnt'], axis=1, inplace=True)
+matrix = lag_feature(matrix, [1], 'date_city_avg_item_cnt')
+matrix.drop(['date_city_avg_item_cnt'], axis=1, inplace=True)
 time.time() - ts
 
 ts = time.time()
 group = matrix.groupby(['date_block_num','item_id', 'city_code']).agg({'item_cnt_month':['mean']})
 group.columns = ['date_item_city_avg_item_cnt']
 group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['date_block_num','item_id','city_code'], how='left')
+matrix['date_item_city_avg_item_cnt'] = matrix['date_item_city_avg_item_cnt'].astype(np.float16)
+matrix = lag_feature(matrix, [1], 'date_item_city_avg_item_cnt')
+matrix.drop(['date_item_city_avg_item_cnt'], axis=1, inplace=True)
+time.time() -ts
+
+
+ts = time.time()
+group = matrix.groupby(['date_block_num','type_code']).agg({'item_cnt_month':['mean']})
+group.columns = ['date_type_avg_item_cnt']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['date_block_num','type_code'], how='left')
+matrix['date_type_avg_item_cnt'] = matrix['date_type_avg_item_cnt'].astype(np.float16)
+matrix = lag_feature(matrix, [1], 'date_type_avg_item_cnt')
+matrix.drop(['date_type_avg_item_cnt'], axis=1, inplace=True)
+time.time() -ts
+
+ts = time.time()
+group = matrix.groupby(['date_block_num','subtype_code']).agg({'item_cnt_month':['mean']})
+group.columns = ['date_subtype_avg_item_cnt']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['date_block_num','subtype_code'], how='left')
+matrix['date_subtype_avg_item_cnt'] = matrix['date_subtype_avg_item_cnt'].astype(np.float16)
+matrix = lag_feature(matrix, [1], 'date_subtype_avg_item_cnt')
+matrix.drop(['date_subtype_avg_item_cnt'], axis=1, inplace=True)
+time.time() - ts
+
+
+#Trend features
+
+
+ts = time.time()
+group = train.groupby(['item_id']).agg({'item_price':['mean']})
+group.columns = ['item_avg_item_price']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=['item_id'], how='left')
+matrix['item_avg_item_price'] = matrix['item_avg_item_price'].astype(np.float16)
+
+group = train.groupby(['date_block_num','item_id']).agg({'item_price':['mean']})
