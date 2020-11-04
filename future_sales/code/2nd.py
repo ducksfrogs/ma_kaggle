@@ -91,5 +91,28 @@ plt.subplot(311)
 plt.title('Original')
 plt.xlabel('Time')
 plt.ylabel("Sales")
-new_ts = difference(ts)
 plt.plot(ts)
+plt.subplot(312)
+plt.title("After De-trend")
+plt.xlabel("Time")
+plt.ylabel("Sales")
+new_ts = difference(ts)
+plt.plot(new_ts)
+plt.plot()
+
+plt.subplot(313)
+plt.title("After De-seasonalization")
+plt.xlabel('Time')
+
+plt.ylabel('Sales')
+new_ts = difference(ts, 12)
+plt.plot(new_ts)
+plt.plot()
+
+test_stationarity(new_ts)
+
+
+def tsplot(y, lags=None, figsize=(10,8), style='bmh', title=''):
+    if not ininstancy(y, pd.Series):
+        y = pd.Series(y)
+    with plt.style.context(style)
