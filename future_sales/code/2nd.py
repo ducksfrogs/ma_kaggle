@@ -68,3 +68,28 @@ def test_stationarity(timeseries):
     print("Results of Dicky-Fuller Test:")
     dftest = adfuller(timeseries, autolag='AIC')
     dfoutput = pd.Series(dftest[0:4], index=['Test Static', ])
+
+
+from pandas import Series as Series
+
+def difference(dataset, interval=1):
+    diff = list()
+    for i in range(interval, len(dataset)):
+        value = dataset[i] - dataset[i - interval]
+        diff.append(value)
+    return Series(diff)
+
+
+def inverse_difference(last_ob, value):
+    return value + last_ob
+
+
+ts = sales.groupby(['date_block_num'])['item_cnt_day'].sum()
+ts.astype('float')
+plt.figure(figsize=(16,15))
+plt.subplot(311)
+plt.title('Original')
+plt.xlabel('Time')
+plt.ylabel("Sales")
+new_ts = difference(ts)
+plt.plot(ts)
