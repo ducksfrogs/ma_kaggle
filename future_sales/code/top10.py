@@ -51,4 +51,23 @@ if kernel_with_output:
 
 if kernel_with_output:
     prev_month_selector = (trainset.month == 10) & (trainset.year == 2015)
-    train_subset
+    train_subset = trainset[prev_month_selector]
+    groups = train_subset[['shop_id','item_id','item_cnt_month']].groupby(by=['shop_id','item_id'])
+    train_subset = groups.agg({'item_cnt_month':'sum'}).reset_index()
+    train_subset.head()
+
+
+if kernel_with_output:
+    maeged = test.merge(trainset, on=['shop_id','item_id'], how='left')[["ID","item_cnt_month"]]
+    merged.isna().sum()
+
+if kernel_with_output:
+    merged['item_cnt_month'] = merged.item_cnt_month.fillna(0).clip(0, 20)
+    submission = merged.set_index("ID")
+    submission.to_csv("benchmark.csv")
+
+
+if kernel_with_output:
+    baseline_features = ['shop_id', 'item_id', 'item_category_id', 'date_block_num', 'item_cnt_month']
+    train = trainset[baseline_features]
+    train = train.set_index('shop_id')
