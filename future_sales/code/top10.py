@@ -48,3 +48,7 @@ if kernel_with_output:
     trainset.to_csv('trainset_with_grid.csv')
 
     trainset.head()
+
+if kernel_with_output:
+    prev_month_selector = (trainset.month == 10) & (trainset.year == 2015)
+    train_subset
