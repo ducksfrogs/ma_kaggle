@@ -36,3 +36,6 @@ for i in range(34):
 
 matrix = pd.DataFrame(np.vstack(matrix), columns=cols)
 matrix['date_block_num'] = matrix['date_block_num'].astype(np.int8)
+matrix['shop_id'] = matrix['shop_id'].astype(np.int8)
+matrix['item_id'] = matrix['item_id'].astype(np.int16)
+matrix.sort_values(cols, inplace=True)

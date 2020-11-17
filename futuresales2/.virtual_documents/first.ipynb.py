@@ -40,19 +40,32 @@ for i in range(34):
 
 
 
-for i in range(2):
-    sales = train[train.date_block_num==i]
-    matrix.append(np.array(list(product([i], sales.shop_id.unique(), sales.item_id.unique())), dtype='int16'))
+matrix = pd.DataFrame(np.vstack(matrix), columns=cols)
+matrix['date_block_num'] = matrix['date_block_num'].astype(np.int8)
+matrix['shop_id'] = matrix['shop_id'].astype(np.int8)
+matrix['item_id'] = matrix['item_id'].astype(np.int16)
 
 
 
-matrix 
+matrix.sort_values(cols, inplace=True)
 
 
-sales.shop_id.unique()
 
 
-sales
+
+
+group = train.groupby(['date_block_num', 'shop_id', 'item_id']).agg({'item_cnt_day':['sum']})
+group.columns = ['item_cnt_day']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=cols, how='left')
+
+
+
+matrix
+
+
+group
 
 
 
