@@ -80,4 +80,4 @@ ipython_config.py
 *.csv
 *.zip
 .idea/
-
+.virtual_documents/
