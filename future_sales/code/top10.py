@@ -36,7 +36,7 @@ if kernel_with_output:
         cur_shops = sales_train[sales_train['date_block_num']==block_num]['shop_id'].unique()
         cur_items = sales_train[sales_train['date_block_num'] == block_num]['item_id'].unique()
         grid.append(np.array(list(product(*[cur_shops, cur_items, [block_num]])),dtype='int32'))
-    index_col = ['shop_id', 'item_id', 'date_block_num']
+    index_cols = ['shop_id', 'item_id', 'date_block_num']
     grid = pd.DataFrame(np.vstack(grid), columns=index_cols, dtype=np.int32)
     sales_train['item_cnt_day'] = sales_train['item_cnt_day'].clip(0,20)
     groups = sales_train.groupby(['shop_id', 'item_id','date_block_num'])
