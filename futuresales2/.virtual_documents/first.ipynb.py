@@ -23,6 +23,8 @@ train = pd.read_csv('../input/sales_train.csv')
 
 test = pd.read_csv('../input/test.csv')
 
+
+
 train = train[train.item_price < 100000]
 train = train[train.item_cnt_day < 1001]
 
@@ -30,9 +32,27 @@ matrix = []
 
 cols = ['date_block_num', 'shop_id', 'item_id']
 
+
+
 for i in range(34):
     sales = train[train.date_block_num==i]
     matrix.append(np.array(list(product([i], sales.shop_id.unique(), sales.item_id.unique())), dtype='int16'))
 
-matrix = pd.DataFrame(np.vstack(matrix), columns=cols)
-matrix['date_block_num'] = matrix['date_block_num'].astype(np.int8)
+
+
+for i in range(2):
+    sales = train[train.date_block_num==i]
+    matrix.append(np.array(list(product([i], sales.shop_id.unique(), sales.item_id.unique())), dtype='int16'))
+
+
+
+matrix 
+
+
+sales.shop_id.unique()
+
+
+sales
+
+
+
