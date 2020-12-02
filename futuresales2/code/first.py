@@ -39,3 +39,11 @@ matrix['date_block_num'] = matrix['date_block_num'].astype(np.int8)
 matrix['shop_id'] = matrix['shop_id'].astype(np.int8)
 matrix['item_id'] = matrix['item_id'].astype(np.int16)
 matrix.sort_values(cols, inplace=True)
+
+
+group = train.groupby(['date_block_num', 'shop_id', 'item_id']).agg({'item_cnt_day':['sum']})
+group.columns = ['item_cnt_day']
+group.reset_index(inplace=True)
+
+matrix = pd.merge(matrix, group, on=cols, how='left')
+matrix['item_cnt_month'] = (matrix['item_cnt_month'].fillna(0).clip(0,20).astype(np.float16))
