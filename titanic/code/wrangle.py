@@ -30,3 +30,25 @@ test_df = test_df.drop(['Ticket','Cabin'], axis=1)
 combine = [train_df, test_df]
 
 print("After", train_df.shape, test_df.shape, combine[0].shape, combine[1].shape)
+
+for dataset in combine:
+    dataset['Title'] = dataset.Name.str.extract('([A-Za-z]+)\.',expand=False)
+
+pd.crosstab(train_df["Title"], train_df['Sex'])
+
+for dataset in combine:
+    dataset['Title'] = dataset['Title'].replace(['Lady', 'Countess', 'Capt', 'Col',\
+    'Don', 'Dr', 'Major', 'Rev', 'Sir', 'Jonkeer', 'Dona'], 'Rare')
+    dataset['Title'] = dataset['Title'].replace('Mlle', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Ms','Miss')
+    dataset['Title'] = dataset['Title'].replace('Mme','Mrs')
+
+train_df[['Title', 'Survived']].groupby(['Title'], as_index=False).mean()
+
+title_mapping = {"Mr": 1, "Miss": 2, "Mrs": 3, "Master": 4, "Rare": 5}
+
+for dataset in combine:
+    dataset['Title'] = dataset['Title'].map(title_mapping)
+    dataset['Title'] = dataset['Title'].fillna(0)
+
+train_df.head()
