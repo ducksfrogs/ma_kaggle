@@ -22,17 +22,11 @@ test_df = pd.read_csv('../input/test.csv')
 
 combine = [train_df, test_df]
 
-g = sns.FacetGrid(train_df, col='Survived')
-g.map(plt.hist, 'Age', bins=20)
 
-grid = sns.FacetGrid(train_df, col='Survived',row='Pclass', size=2.2, aspect=1.6 )
-grid.map(plt.hist, 'Age', alpha=0.5, bins=20)
-grid.add_legend()
+print("Before", train_df.shape, test_df.shape, combine[0].shape, combine[1].shape)
 
-grid = sns.FacetGrid(train_df, row='Embarked', size=2.2, aspect = 1.6)
-grid.map(sns.pointplot, 'Pclass', 'Survived', 'Sex', palette='deep')
-grid.add_legend()
+train_df =train_df.drop(['Ticket', 'Cabin'], axis=1)
+test_df = test_df.drop(['Ticket','Cabin'], axis=1)
+combine = [train_df, test_df]
 
-grid = sns.FacetGrid(train_df, row='Embarked', col='Survived', size=2.2,aspect = 1.6)
-grid.map(sns.barplot, 'Sex', 'Fare', alpha=0.5, ci=None)
-grid.add_legend()
+print("After", train_df.shape, test_df.shape, combine[0].shape, combine[1].shape)
