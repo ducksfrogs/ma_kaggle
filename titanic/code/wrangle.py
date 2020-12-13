@@ -52,3 +52,34 @@ for dataset in combine:
     dataset['Title'] = dataset['Title'].fillna(0)
 
 train_df.head()
+
+train_df = train_df.drop(['Name', 'PassengerId'], axis=1)
+test_df = test_df.drop(['Name'], axis=1)
+combine = [train_df, test_df]
+train_df.shape, test_df.shape
+
+
+
+for dataset in combine:
+    dataset['Sex'] = dataset['Sex'].map({'female':1, 'male': 0}).astype(int)
+
+train_df.head()
+
+grid = sns.FacetGrid(train_df, row='Pclass', col='Sex', size=2.2, aspect=1.6)
+grid.map(plt.hist, 'Age', alpha=0.5, bins=20)
+grid.add_legend
+
+guess_ages = np.zeros((2,3))
+guess_ages
+
+for dataset in combine:
+    for i in range(0,2):
+        for j in range(0,3):
+            guess_df = dataset[(dataset['Sex']==i) & \
+                               (dataset['Pclass'] ==j +1)['Age'].dropna()
+            age_guess = guess_df.median()
+            guess_ages[i,j] = int(age_guess/0.5 + 0.5) * 0.5
+
+
+train_df['AgeBand'] = pd.cut(train_df['Age'], 5)
+train_df[['AgeBand', 'Survived']].groupby(['AgeBand'], as_index=False).mean().sort_values(by='AgeBand', ascending=True)
