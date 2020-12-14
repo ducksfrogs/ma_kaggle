@@ -112,3 +112,16 @@ for dataset in combine:
     dataset.loc[dataset['FamilySize'] == 1, 'IsAlone'] =1
 
 train_df[['IsAlone','Survived']].groupby(['IsAlone'], as_index=False).mean()
+
+train_df = train_df.drop(['Parch', 'SibSp', 'FamilySize'], axis=1)
+test_df = test_df.drop(['Parch', 'SibSp', 'FamilySize'], axis=1)
+combine = [train_df, test_df]
+
+train_df.head()
+
+for dataset in combine:
+    dataset['Age*Class'] = dataset.Age * dataset.Pclass
+
+train_df.loc[:, ['Age*Class', 'Age', 'Pclass']].head(10)
+
+freq_port = train_df.Embarked.dropna().mode()[0]
