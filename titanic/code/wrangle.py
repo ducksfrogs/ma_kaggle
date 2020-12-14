@@ -125,3 +125,22 @@ for dataset in combine:
 train_df.loc[:, ['Age*Class', 'Age', 'Pclass']].head(10)
 
 freq_port = train_df.Embarked.dropna().mode()[0]
+
+for dataset in combine:
+    dataset['Embarked'] = dataset['Embarked'].fillna(freq_port)
+
+train_df[['Embarked','Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False)
+
+for dataset in combine:
+    dataset['Embarked'] = dataset['Embarked'].map({'S':0, 'C':1, 'Q':2}).astype(int)
+
+
+test_df['Fare'].fillna(test_df['Fare'].dropna().median(), inplace=True)
+
+train_df['FareBand'] = pd.qcut(train_df['Fare'], 4)
+
+train_df[['FareBand', 'Survived']].groupby(['FareBand'], as_index=False).mean().sort_values(by='FareBand', ascending=True)
+
+
+for dataset in combine:
+    dataset.
