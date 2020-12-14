@@ -143,4 +143,13 @@ train_df[['FareBand', 'Survived']].groupby(['FareBand'], as_index=False).mean().
 
 
 for dataset in combine:
-    dataset.
+    dataset.loc[ dataset['Fare'] <= 7.91, 'Fare']= 0
+    dataset.loc[ (dataset['Fare'] > 7.91) & (dataset['Fare'] <=14.454), 'Fare'] = 1
+    dataset.loc[ (dataset['Fare'] > 14.454) & (dataset['Fare']<=31), 'Fare'] = 2
+    dataset.loc[ (dataset['Fare'] > 31), 'Fare'] =3
+    dataset['Fare'] = dataset['Fare'].astype(int)
+
+train_df = train_df.drop(['FareBand'], axis=1)
+combine = [train_df, test_df]
+
+train_df.head(10)
