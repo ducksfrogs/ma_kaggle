@@ -59,3 +59,15 @@ sns.distplot(train['SalePrice'], fit=norm)
 print('\n mu= {:.2f} and sigma = {:.2f}'.format(mu, sigma))
 
 plt.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f})'.format(mu, sigma)],loc='best')
+
+train['SalePrice'] = np.log1p(train['SalePrice'])
+sns.distplot(train['SalePrice'], fit=norm)
+(mu, sigma) = norm.fit(train['SalePrice'])
+print('\n mu= {:.2f} and \sigma = {:.2f}\n'.format(mu, sigma))
+plt.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f})'.format(mu, sigma)],loc='best')
+plt.ylabel("Frequency")
+plt.title('SalePrice distribution')
+
+fig = plt.figure()
+res = stats.probplot(train['SalePrice'], plot=plt)
+plt.show()
