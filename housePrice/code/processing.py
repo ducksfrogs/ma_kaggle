@@ -34,4 +34,28 @@ plt.ylabel("SalePrice", fontsize=13)
 plt.xlabel("GrLivArea", fontsize=13)
 plt.show()
 
-train = train.drop(train[train['GrLivArea']>4000])
+train = train.drop(train[(train['GrLivArea']>4000) & (train['SalePrice'] <300000)].index)
+fig, ax = plt.subplots()
+ax.scatter(x=train['GrLivArea'], y=train['SalePrice'])
+plt.ylabel("SalePrice", fontsize=13)
+plt.xlabel("GrLivArea", fontsize=13)
+plt.show()
+
+sns.distplot(train['SalePrice'], fit=norm)
+
+(mu, sigma) = norm.fit(train['SalePrice'])
+print('\n mu = {:.2f} and sigma = {:.2f}\n'.format(mu, sigma))
+plt.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f})'.format(mu, sigma)],loc='best')
+plt.ylabel('Frequency')
+plt.title('SalePrice distribution')
+
+fig = plt.figure()
+res = stats.probplot(train['SalePrice'], plot=plt)
+plt.show()
+
+
+sns.distplot(train['SalePrice'], fit=norm)
+(mu, sigma) = norm.fit(train['SalePrice'])
+print('\n mu= {:.2f} and sigma = {:.2f}'.format(mu, sigma))
+
+plt.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f})'.format(mu, sigma)],loc='best')
