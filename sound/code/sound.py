@@ -26,3 +26,22 @@ train.sample(10)
 test.sample(5)
 
 print("Number of train examples=", train.shape[0], "Number of classes", len(set(train.labels)))
+print("Number of test examples=", test.shape[0], "number of classes=", len(set(test.columns[1:])))
+
+
+train = train[train.labels.isin(test.columns[1:])]
+print(len(train))
+
+category_group = train.groupby(['labels']).count()
+category_group.columns = ['counts']
+print(len(category_group))
+
+
+plot = category_group.sort_values(ascending=True, by='counts').plot(
+    kind='barh',
+    title='number of Audio samples per category',
+    color='deeppink',figsize=(15,20)
+)
+
+plot.set_xlabel('category')
+plot.set_ylabel("Number of Samples")
