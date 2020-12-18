@@ -32,4 +32,21 @@ class Config(object):
         else:
             self.dim = (self.audio_length, 1)
 
-            
+class DataGenerator(Sequence):
+    def __init__(self,
+                 config, data_dir, list_IDs, labels=None,batch_size=64,
+                 preprocessing_fn=lambda x: x):
+        self.config = config
+        self.data_dir = data_dir
+        self.list_IDs = list_IDs
+        self.labels = labels
+        self.batch_size = batch_size
+        self.preprocessing_fn = preprocessing_fn
+        self.on_epoch_end()
+        self.dim = self.config.dim
+
+    def __len__(self):
+        return int(np.ceil(len(self.list_IDs) / self.batch_size))
+
+    def __getitem__(self):
+        indexes = 
