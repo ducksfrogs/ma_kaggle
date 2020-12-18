@@ -45,3 +45,28 @@ plot = category_group.sort_values(ascending=True, by='counts').plot(
 
 plot.set_xlabel('category')
 plot.set_ylabel("Number of Samples")
+
+
+#wave library
+
+import wave
+wav = wave.open(fname)
+print("Sampling (frame) rate = ", wav.getframerate())
+print("Total samples (frames) = ", wav.getnframes())
+print("Duration = ", wav.getnframes()/wav.getframerate())
+
+
+#Using scipy
+from scipy.io import wavfile
+rate, data = wavfile.read(fname)
+print("Sampling (frame) rate = ", rate)
+print("Total samples (frames) = ", data.shape)
+print(data)
+
+plt.plot(data, '-', )
+
+plt.figure(figsize=(16,4))
+plt.plot(data[:500], '-'); plt.plot(data[:500], '-'); plt
+
+train['nframes'] = train['fname'].apply(lambda f: wave.open('../input/train_curated/' + f).getnframes())
+test['nframes'] = test['fname'].apply(lambda f: wave.open('../input/test/' + f).getnframes())
