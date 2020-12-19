@@ -53,4 +53,10 @@ train['CategoricalFare'] = pd.qcut(train['Fare'], 4)
 for dataset in full_data:
     age_avg = dataset['Age'].mean()
     age_std = dataset['Age'].std()
-    
+    age_null_count = dataset['Age'].isnull().sum()
+    age_null_random_list = np.random.randint(age_avg - age_std,
+                                             age_avg + age_std, size=age_null_count)
+    dataset['Age'][np.isnan(dataset['Age'])] = age_null_random_list
+    dataset['Age'] = dataset['Age'].astype(int)
+
+train['CategoricalAge'] = pd.cut(train['Age'], 5)
