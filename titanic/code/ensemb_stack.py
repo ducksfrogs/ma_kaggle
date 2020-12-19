@@ -60,3 +60,10 @@ for dataset in full_data:
     dataset['Age'] = dataset['Age'].astype(int)
 
 train['CategoricalAge'] = pd.cut(train['Age'], 5)
+
+def get_title(name):
+    title_search = re.search(' ([A-Za-z]+)\.', name)
+
+    if title_search:
+        return title_search.group(1)
+    return ""
