@@ -117,3 +117,53 @@ plt.figure(figsize=(14,12))
 plt.title('Person Correlation of Feaure', y=1.05, size=15)
 sns.heatmap(train.astype(float).corr(), linewidths=0.1, vmax=1.0,
             square=True, cmap=colormap, linecolor="white", annot=True)
+
+
+
+
+#Some parameters
+
+
+ntrain = train.shape[0]
+ntest = test.shape[0]
+SEEF = 0
+NFOLDS = 5
+kf = KFold(ntrain, n_folds=NFOLDS, random_state=SEED)
+
+class SklernHelper(object):
+    def __init__(self, clf, seed=0, params=None):
+        params['random_state'] = seed
+        self.clf = clf(**params)
+
+    def train(self, X_train, y_train):
+        self.clf.fit(X_train, y_train)
+
+    def predict(self, x):
+        return self.clf.predict(x)
+
+    def fit(self, x, y):
+        return self.clf.fit(x, y)
+
+    def feature_importances(self, x, y):
+        print(self.clf.fit(x,y).feature_importances_)
+
+
+
+
+def get_oof(clf, x_train, y_train, x_test):
+    oof_train = np.zeros((ntrain,))
+    oof_test = np.zeros((ntest,))
+    oof_test_skf = np.empty((NFOLDS, ntest))
+
+    for i, (train_index, test_index) in enumerate(kf):
+        x_tr = x_train[train_index]
+        y_tr = y_train[train_index]
+        x_te = x_train[test_index]
+
+        clf.train(x_tr, y_tr)
+
+        oof_train[test_index] = clf.predict(x_te)
+        oof_test_skf[i, :] = clf.predict(x_test)
+
+    oof_test[:] = oof_test_skf.mean(axis=0)
+    return oof_train.reshape(-1,1), oof_test.reshape(-1,1)
