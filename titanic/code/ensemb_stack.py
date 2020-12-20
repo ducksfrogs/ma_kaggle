@@ -101,4 +101,19 @@ for  dataset in full_data:
     dataset.loc[ (dataset['Age'] > 16) & (dataset['Age'] <= 32), 'Age'] =1
     dataset.loc[ (dataset['Age'] > 32) & (dataset['Age'] <= 48), 'Age'] =2
     dataset.loc[ (dataset['Age'] > 48) & (dataset['Age'] <= 64), 'Age'] =3
-    dataset.loc[ dataset['Age'] > 64] = 4;
+    dataset.loc[ dataset['Age'] > 64, 'Age'] = 4;
+
+
+drop_elements = ['PassengerId','Name','Ticket','Cabin','SibSp']
+train = train.drop(drop_elements, axis=1)
+train = train.drop(['CategoricalAge', "CategoricalFare"], axis=1)
+test = test.drop(drop_elements, axis=1)
+
+
+#visualize
+
+colormap = plt.cm.RdBu
+plt.figure(figsize=(14,12))
+plt.title('Person Correlation of Feaure', y=1.05, size=15)
+sns.heatmap(train.astype(float).corr(), linewidths=0.1, vmax=1.0,
+            square=True, cmap=colormap, linecolor="white", annot=True)
