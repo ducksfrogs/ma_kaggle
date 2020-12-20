@@ -126,7 +126,7 @@ sns.heatmap(train.astype(float).corr(), linewidths=0.1, vmax=1.0,
 
 ntrain = train.shape[0]
 ntest = test.shape[0]
-SEEF = 0
+SEED = 0
 NFOLDS = 5
 kf = KFold(ntrain, n_folds=NFOLDS, random_state=SEED)
 
@@ -167,3 +167,60 @@ def get_oof(clf, x_train, y_train, x_test):
 
     oof_test[:] = oof_test_skf.mean(axis=0)
     return oof_train.reshape(-1,1), oof_test.reshape(-1,1)
+
+
+rf_params = {
+    'n_jobs': -1,
+    'n_estimators': 500,
+    'warm_start': True,
+    'max_depth': 6,
+    'min_samples_leaf': 2,
+    'max_features' : 'sqrt',
+    'verbose': 0
+}
+
+
+et_params = {
+    'n_jobs': -1,
+    'n_estimators': 500,
+    'max_depth': 8,
+    'min_samples_leaf': 2,
+    'verbose': 0
+}
+
+ada_params = {
+    'n_estimators': 500,
+    'learning_rate': 0.75
+}
+
+gb_params = {
+    'n_estimators': 500,
+    'max_depth': 5,
+    'min_samples_leaf':2,
+    'verbose': 0
+}
+
+svc_params = {
+    'kernel': 'linear',
+    'C': 0.025
+}
+
+
+rf = SklernHelper(clf=RandomForestClassifier, seed=SEED, params=rf_params)
+et = SklernHelper(clf=ExtraTreesClassifier, seed = SEED, params=et_params)
+ada = SklernHelper(clf=AdaBoostClassifier,seed= SEED, params= ada_params)
+gb = SklernHelper(clf=GradientBoostingClassifier, seed=SEED, params= gb_params)
+svv = SklernHelper(clf=SVC, seed=SEED, params= svc_params)
+
+
+y_train = train['Survived'].ravel()
+train = train.drop(['Survived'], axis=1)
+x_train = train.values
+x_test = test.values
+
+
+et_oof_train, et_oof_test = get_oof(et, x_train, y_train, x_test)
+rf_oof_train, rf_oof_test = get_oof(rf, x_train, y_train, x_test)
+ada_oof_train, ada_oof_test = get_oof(ada, x_train, y_train, x_test)
+gb_oof_train, gb_oof_test = get_oof(gb, x_train, y_train, x_test)
+svc_oof_train, svc_oof_test = get_oof(svc, x_train, y_train, x_test)
