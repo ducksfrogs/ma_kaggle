@@ -67,3 +67,38 @@ def get_title(name):
     if title_search:
         return title_search.group(1)
     return ""
+
+for dataset in full_data:
+    dataset['Title'] = dataset['Name'].apply(get_title)
+
+for dataset in full_data:
+    dataset['Title'] = dataset['Title'].replace(['Lady','Countess','Capt',\
+                                                'Col', 'Dr','Major', 'Rev', 'Sir',\
+                                                'Jonkheer', 'Dona'], 'Rare')
+
+    dataset['Title'] = dataset['Title'].replace("Mlle", 'Miss')
+    dataset['Title'] = dataset['Title'].replace("Ms", "Miss")
+    dataset['Title'] = dataset['Title'].replace("Mme", 'Mrs')
+
+
+for  dataset in full_data:
+    dataset['Sex'] = dataset['Sex'].map({'femail':0, 'male':1}).astype(int)
+
+    title_mapping = {"Mr":1, "Miss":2, "Mrs":3, "Master": 4, "Rare":5}
+
+    dataset['Title'] = dataset['Title'].map(title_mapping)
+    dataset['Title']= dataset['Title'].fillna(0)
+
+    dataset["Embarked"] = dataset['Embarked'].map({"S":0, "C":1, "Q":2}).astype(int)
+
+    dataset.loc[ dataset['Fare'] <= 7.91, 'Fare'] = 0
+    dataset.loc[ (dataset['Fare'] > 7.91) & (dataset['Fare'] <= 14.454), 'Fare'] = 1
+    dataset.loc[ (dataset['Fare'] > 14.454) & (dataset['Fare'] <= 31), 'Fare'] = 2
+    dataset.loc[ (dataset['Fare'] > 31) , 'Fare'] = 3
+    dataset['Fare'] = dataset['Fare'].astype(int)
+
+    dataset.loc[ dataset['Age'] <= 16] = 0
+    dataset.loc[ (dataset['Age'] > 16) & (dataset['Age'] <= 32), 'Age'] =1
+    dataset.loc[ (dataset['Age'] > 32) & (dataset['Age'] <= 48), 'Age'] =2
+    dataset.loc[ (dataset['Age'] > 48) & (dataset['Age'] <= 64), 'Age'] =3
+    dataset.loc[ dataset['Age'] > 64] = 4;
