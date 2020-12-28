@@ -86,3 +86,22 @@ test_df = test_df.drop(['Name', "PassengerId"],axis=1)
 
 for dataset in combine:
     dataset['Sex'] = dataset['Sex'].map({"female": 1, "male":0}).astype(int)
+
+train_df.head()
+
+grid = sns.FacetGrid(train_df, row='Pclass', col='Sex', size=2.2, aspect=1.6)
+grid.map(plt.hist, 'Age', alpha=.5, bins=20)
+grid.add_legend()
+
+
+guess_ages = np.zeros((2,3))
+guess_ages
+
+for dataset in combine:
+    for i in range(0,2):
+        for j in range(0,3):
+            guess_df = dataset[(dataset['Sex'] == i) & (dataset['Pclass'] == j + 1)]['Age'].dropna()
+            age_guess = guess_df.median()
+    for i in range(0,2):
+        for j in range(0,3):
+            dataset.loc[dataset.Age.isnull() & ]
