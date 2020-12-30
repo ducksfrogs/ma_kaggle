@@ -119,7 +119,11 @@ sns.heatmap(train.astype(float).corr(), linewidths=0.1, vmax=1.0,
             square=True, cmap=colormap, linecolor="white", annot=True)
 
 
-
+g = sns.pairplot(train[[u'Survived', u'Pclass', u'Sex', u'Age', u'Parch',
+                        u'Fare', u'Embarked', u'FamilySize', u'Title']], hue='Survived',
+                        palette='seismic', size=1.2, diag_kind='kde', diag_kws=dict(shade=True,
+                        plot_kws=dict(s=10))
+g.set(xticklabels=[])
 
 #Some parameters
 
@@ -224,3 +228,52 @@ rf_oof_train, rf_oof_test = get_oof(rf, x_train, y_train, x_test)
 ada_oof_train, ada_oof_test = get_oof(ada, x_train, y_train, x_test)
 gb_oof_train, gb_oof_test = get_oof(gb, x_train, y_train, x_test)
 svc_oof_train, svc_oof_test = get_oof(svc, x_train, y_train, x_test)
+
+rf_feature = rf.feature_importances(x_train, y_train)
+et_feature = et.feature_importances(x_train, y_train)
+ada_feature = ada.feature_importances(x_train, y_train)
+gb_feature = gb.feature_importances(x_train, y_train)
+
+
+
+
+cols = train.columns.values
+
+feature_dataframe = pd.DataFrame({'features': cols,
+                    'Random Forest feature importances': rf_feature,
+                    'Extra Trees feature importances': et_feature,
+                    'AdaBoost feature importances': ada_feature,
+                    "Gradient Boost feature importances": gb_feature})
+
+trace = go.Scatter(
+        y = feature_dataframe['Random Forest feature importances'].values,
+        x = feature_dataframe['features'].values,
+        mode='markers',
+        marker = dict(
+                sizemode='diameter',
+                sizeref=1,
+                size=25,
+                color = feature_dataframe["Random Forest feature importances"].values,
+                colorscale = 'Portland',
+                showscale=True
+        ),
+        text= feature_dataframe['features'].values
+)
+
+data = [trace]
+
+
+layout = go.Layout(
+    autosize=True,
+    title='Random Forest Feature Importance',
+    hovermode='closest',
+
+    yaxis=dict(
+        title='Feature Importance',
+        ticklen=5,
+        gridwidth=2
+    ),
+    showlegend=False
+)
+fig = go.Figure(data=data,layout=layout)
+py.iplot(fig, filename='scatter2010')
