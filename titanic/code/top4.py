@@ -48,3 +48,25 @@ def detect_outliners(df, n, features):
 Outliers_to_drop = detect_outliners(train, 2, ['Age', 'SibSp','Parch','Fare'])
 
 train.loc[Outliers_to_drop]
+
+train = train.drop(Outliers_to_drop, axis=0)
+
+train_len = len(train)
+dataset = pd.concat(obj=[train, test], axis=0).reset_index(drop=True)
+
+dataset = dataset.fillna(np.nan)
+
+dataset.isnull().sum()
+
+
+train.info()
+train.isnull().sum()
+
+train.head()
+
+train.shape
+
+train.describe()
+
+g = sns.heatmap(train[['Survived', 'SibSp', 'Parch', 'Age','Fare']].cprr(), annot=True,
+                fmt='.2f', cmap='coolwarm')
