@@ -70,3 +70,29 @@ train.describe()
 
 g = sns.heatmap(train[['Survived', 'SibSp', 'Parch', 'Age','Fare']].cprr(), annot=True,
                 fmt='.2f', cmap='coolwarm')
+
+
+g = sns.factorplot(x='SibSp', y='Survived', data=train, kind='bar', size=6,
+                    palette='muted')
+
+g.despine(left=True)
+g = g.set_ylabels("survaival probability")
+
+
+g = sns.factorplot(x='Parch', y='Survived', data=train, kind='bar',
+                size=6, palette='muted')
+
+g.despine(left=True)
+g = g.set_ylabels('survaival probability')
+
+
+g = sns.FacetGrid(train, col='Survived')
+g = g.map(sns.distplot, 'Age')
+
+
+g = sns.kdeplot(train['Age'][(train['Survivedu'] == 0) &
+                    (train['Age'].notnull())], color='Red', shade=True)
+g = sns.kdeplot(train['Age'][(train["Survived"] == 1)&(train['Age'].notnull())], ax=g, color='Blue', shade=True)
+g.set_xlabel("Age")
+g.set_ylabel('Frequency')
+g = g.legend(["Not survived"])
