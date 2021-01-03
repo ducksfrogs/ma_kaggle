@@ -58,6 +58,32 @@ for dataset in full_data:
 train['CategoricalAge'] = pd.cut(train['Age'], 5)
 
 
+def get_title(name):
+    title_search = re.search(' ([A-Za-z]+)\.' name)
+    if title_search:
+        return title_search.group(1)
+
+for dataset in full_data:
+    dataset['Title'] = dataset['Name'].apply(get_title)
+
+
+for dataset in full_data:
+    dataset['Title'] = dataset['Title'].replace(['Lady', 'Countess', 'Capt',
+                                                 'Col', 'Don', 'Dr', 'Major', 'Rev', 'Sir', 'Jonkeer','Dona'], 'Rare')
+
+    dataset['Title'] = dataset['Title'].replace('Mlle', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Ms', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Mme', "Mrs")
+
+for dataset in full_data:
+    dataset["Sex"] = dataset['Sex'].map({ 'femail': 0, 'male': 1}).astype(int)
+    title_mapping = {'Mr':1, 'Miss': 2, "Mrs":3, 'Master': 4, "Rare": 5}
+    dataset['Title'] = dataset['Title'].map(title_mapping)
+    dataset['Title'] = dataset['Title'].fillna(0)
+
+
+
+
 colormap = plt.cm.RdBu
 
 plt.figure(figsize=(14,12))
