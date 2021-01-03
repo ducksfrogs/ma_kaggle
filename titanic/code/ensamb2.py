@@ -22,6 +22,41 @@ from sklearn.cross_validation import KFold
 train = pd.read_csv('../input/train.csv')
 test = pd.read_csv('../input/test.csv')
 
+PassengerId = test['PassengerId']
+
+full_data = [train, test]
+
+train['Name_length'] = train['Name'].apply(len)
+test['Name_length'] = test['Name'].apply(len)
+
+train['Has_Cabin'] = train['Cabin'].apply(lambda x: 0 if type(x) == float else 1)
+test['Has_Cabin'] = test['Cabin'].apply(lambda x: 0 if type(x) == float else 1 )
+
+for dataset in full_data:
+    dataset['FamilySize'] = dataset['SibSp'] + dataset['Parch'] + 1
+
+for dataset in full_data:
+    dataset['IsAlone'] = 0
+    dataset.loc[dataset['FamilySize']==1, 'IsAlone'] = 1
+
+for dataset in full_data:
+    dataset['Embarked'] = dataset['Embarked'].fillna('$')
+
+for dataset in full_data:
+    dataset['Fare'] = dataset['Fare'].fillna(train['Fare'].median())
+
+train['CategoricalFare'] = pd.qcut(train['Fare'],4)
+
+for dataset in full_data:
+    age_avg = dataset['Age'].mean()
+    age_std = dataset['Age'].std()
+    age_null_count = dataset['Age'].isnull().sum()
+    age_null_random_int = np.random.randint(age_avg-std, age_avg+age_std,size=age_null_count)
+    dataset['Age'][np.isnan(dataset['Age'])] = age_null_random_int
+    dataset['Age'] = dataset['Age'].astype(int)
+
+train['CategoricalAge'] = pd.cut(train['Age'], 5)
+
 
 colormap = plt.cm.RdBu
 
