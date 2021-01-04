@@ -199,3 +199,14 @@ rf = SklearnHelper(clf=RandomForestClassifier, seed=SEED, params=rf_params)
 et = SklearnHelper(clf=ExtraTreesClassifier, seed=SEED, params=et_params)
 ada = SklearnHelper(clf=AdaBoostClassifier, seed=SEED, params=ada_params)
 gb = SklearnHelper(clf=GradientBoostingClassifier, seed=SEED, params=gb_params)
+
+y_train = train['Survived'].ravel()
+train = train.drop(['Survived'], axis=1)
+x_train = train.values
+x_test = test.values
+
+et_oof_train, et_oof_test = get_oof(et, x_train, y_train, x_test )
+rf_oof_train, rf_oof_test = get_oof(rf, x_train, y_train, x_test)
+ada_oof_train, ada_oof_test = get_oof(ada, x_train, y_train, x_test)
+gb_oof_train, gp_oof_test = get_oof(gb, x_train, y_train, x_test )
+svc_oof_train, svc_oof_test = get_oof(svc, x_train, y_train, x_test)
