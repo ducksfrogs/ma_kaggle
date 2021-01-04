@@ -81,6 +81,23 @@ for dataset in full_data:
     dataset['Title'] = dataset['Title'].map(title_mapping)
     dataset['Title'] = dataset['Title'].fillna(0)
 
+    dataset['Embarked'] = dataset['Embarked'].map({'S':0, 'C': 1, 'Q':2}).astype(int)
+    dataset.loc[ dataset['Fare'] <= 7.91, 'Fare'] = 0
+    dataset.loc[ (dataset['Fare'] > 7.91) & (dataset['Fare'] <= 14.454), 'Fare' ] = 1
+    dataset.loc[(dataset['Fare'] > 14.454) & (dataset['Fare'] <= 31), 'Fare'] = 2
+    dataset.loc[ (dataset['Fare'] > 31), 'Fare'] = 3
+    dataset['Fare'] = dataset['Fare'].astype(int)
+
+    dataset.loc[dataset['Age'] <= 16, 'Age'] = 0
+    dataset.loc[(dataset['Age']> 16)&(dataset['Age']<=32), 'Age'] = 1
+    dataset.loc[(dataset['Age']>32)&(dataset['Age'] <= 48), 'Age'] =2
+    dataset.loc[(dataset['Age']> 48) & (dataset['Age'] <= 64), 'Age'] = 3
+    dataset.loc[dataset['Age'] > 64, 'Age' ] = 4
+
+    drop_element = ['PassengerId', 'Name', 'Ticket', 'Cabin','SibSp']
+    train = train.drop(drop_element, axis=1)
+    train = train.drop(['CategoricalAge', 'CategricalFare'], axis=1)
+    test = test.drop(drop_element, axis=1)
 
 
 
@@ -90,3 +107,35 @@ plt.figure(figsize=(14,12))
 plt.title('Persno Correlation of Feature', y=1.05, size=15)
 sns.heatmap(train.astype(float).corr(), linewidths=0.1, vmax=1.0,\
             square=True, cmap=colormap, linecolor='white')
+
+g = sns.pairplot(train[[u'Survived', u'Pclass', u'Sex', u'Age',
+                        u'Parch', u'Fare', u'Embarked', u'FamilySize', u'Title']],
+                 hue='Survived', palette='seismic', size=1.2, diag_kind='kde',
+                 diag_kws=dict(shade=True), plot_kws=dict(s=10))
+g.set(xticklabels=[])
+
+
+ntrain = train.shape[0]
+ntest = test.shape[0]
+
+SEED = 0
+NFOLDS = 5
+kf = KFold(ntrain, n_folds=NFOLDS, random_state=SEED)
+
+
+class SklearnHelper(object):
+    def __init__(self, clf, seed=0, params=None):
+        params['random_state'] = seed
+        self.clf = clf(**params)
+
+    def train(self, x_train, y_train):
+        self.clf.fit(x_train, y_train)
+
+    def predict(self, x):
+        return self.clf.predict(x)
+
+    def fit(self, x, y):
+        return self.clf.fit(x,y)
+
+    def feature_importances(self, x, y):
+        print(self.clf.fit(x,y).feature_importances_)
