@@ -139,3 +139,63 @@ class SklearnHelper(object):
 
     def feature_importances(self, x, y):
         print(self.clf.fit(x,y).feature_importances_)
+
+
+    def get_oof(clf, x_train, y_train, x_test):
+        oof_train = np.zeros((ntrain, ))
+        oof_test = np.zeros((ntest, ))
+        oof_test_skf = np.empty((NFOLDS, ntest))
+
+        for i, (train_index, test_index) in enumerate(kf):
+            x_tr = x_train[train_index]
+            y_tr = y_train[train_index]
+            x_te = x_train[test_index]
+
+            clf.train(x_tr, y_tr)
+
+            oof_train[test_index] = clf.predict(x_te)
+            oof_test_skf[i, :] = clf.predict(x_test)
+
+        oof_test[:] = oof_test_skf.mean(axis=0)
+        return oof_train.reshape(-1,1), oof_test.reshape(-1,1)
+
+
+rf_params = {
+    'n_jobs': -1,
+    'n_estimators': 500,
+    'max_depth': 6,
+    'max_samples_leaf': 2,
+    'max_features': 'sqrt',
+    'verbose': 0
+}
+
+et_params = {
+    'n_jobs': -1,
+    'n_estimators': 500,
+    'max_depth': 8,
+    'min_samples_leaf': 2,
+    'verbose': 0
+}
+
+ada_params = {
+    'n_estimators': 500,
+    'learning_rate': 0.75
+}
+
+gb_params = {
+    'n_estimators': 500,
+    'max_depth': 5,
+    'min_samples_leaf': 2,
+    'verbose': 0
+}
+
+svc_params = {
+    'kernel': 'linear',
+    'C': 0.025
+}
+
+
+rf = SklearnHelper(clf=RandomForestClassifier, seed=SEED, params=rf_params)
+et = SklearnHelper(clf=ExtraTreesClassifier, seed=SEED, params=et_params)
+ada = SklearnHelper(clf=AdaBoostClassifier, seed=SEED, params=ada_params)
+gb = SklearnHelper(clf=GradientBoostingClassifier, seed=SEED, params=gb_params)
