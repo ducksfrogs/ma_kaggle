@@ -1,16 +1,40 @@
-guess_ages = np.zeros((2,3))
-guess_ages
+import numpy as np
+import pandas as pd
+import random as rnd
 
-for dataset in combine:
-    for i in range(0,2):
-        for j in range(0,3):
-            guess_df = dataset[(dataset['Sex']==i) & (dataset['Pclass']==j +1)]['Age'].dropna()
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+train_df = pd.read_csv("../input/train.csv")
+test_df = pd.read_csv("../input/test.csv")
+combined_df = [train_df, test_df]
+
+train_df.info()
+print("_"*50)
+test_df.info()
+
+train_df.describe()
+
+train_df.describe(include=['O'])
 
 
-            age_guess = guess_df.median()
+train_df[['Pclass','Survived']].groupby(['Pclass'], as_index=False).mean()\
+            .sort_values(by='Survived')
 
-            guess_ages[i,j] = int(age_guess/ 0.5 + 0.5) *0.5
+train_df[['SibSp', 'Survived']].groupby(['SibSp'], as_index=False).mean().sort_values(by='Survived', ascending=False)
 
-    for i in range(0,2):
-        for j in range(0,3):
-            dataset.loc[(dataset.Age.isn)]
+train_df[['Sex','Survived']].groupby(['Sex'], as_index=False).mean().sort_values(by='Survived', ascending=False)
+
+train_df[['Parch','Survived']].groupby(['Parch'], as_index=False).mean().sort_values(by='Survived', ascending=False)
+
+g = sns.FacetGrid(train_df, col='Survived')
+g.map(plt.hist, "Age", bins=20)
