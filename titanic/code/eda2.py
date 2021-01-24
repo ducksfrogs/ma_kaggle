@@ -38,3 +38,51 @@ train_df[['Parch','Survived']].groupby(['Parch'], as_index=False).mean().sort_va
 
 g = sns.FacetGrid(train_df, col='Survived')
 g.map(plt.hist, "Age", bins=20)
+
+grid = sns.FacetGrid(train_df, col='Survived', row='Pclass', size=2.2,\
+                      aspect=1.6)
+grid.map(plt.hist, 'Age', alpha=.5, bins=20)
+grid.add_legend()
+
+
+grid = sns.FacetGrid(train_df, row='Embarked', size=2.2, aspect=1.6)
+grid.map(sns.pointplot, 'Pclass', 'Survived', 'Sex', palette='deep')
+grid.add_legend()
+
+grid = sns.FacetGrid(train_df, row='Embarked', col='Survived',size=2.2, aspect=1.6)
+grid.map(sns.barplot, 'Sex', 'Fare', alpha=.5, ci=None)
+grid.add_legend()
+
+
+#Correcting by dropping features
+
+print("Before ", train_df.shape, test_df.shape, combined_df[0].shape, combined_df[1].shape)
+
+train_df = train_df.drop(['Ticket', 'Cabin'], axis=1)
+test_df = test_df.drop(["Ticket",'Cabin'], axis=1)
+combined_df = [train_df, test_df]
+
+for dataset in combined_df:
+    dataset['Title'] = dataset.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
+
+pd.crosstab(train_df['Title'], train_df['Sex'])
+
+
+for dataset in combined_df:
+    dataset['Title'] = dataset['Title'].replace(['Lady', 'Countess', "Capt"\
+                                                 , "Col", 'Don', 'Dr', 'Major', 'Rev', 'Sir', 'Jonkheer'\
+                                                 'Dona'], "Rare")
+
+    dataset['Title'] = dataset['Title'].replace('Mlle', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Ms', 'Miss')
+    dataset['Title'] = dataset['Title'].replace('Mme', 'Mrs')
+
+train_df[['Title', 'Survived']].groupby(['Title'], as_index=False).mean()
+
+title_mapping = {'Mr':1, 'Miss': 2, 'Mrs': 3, 'Master': 4, 'Rare': 5}
+
+for dataset in combined_df:
+    dataset['Title'] = dataset['Title'].replace(title_mapping)
+    dataset['Title'] = dataset['Title'].fillna(0)
+
+train_df = train_df.drop(['Name', 'PassengerId'], axis=1)
