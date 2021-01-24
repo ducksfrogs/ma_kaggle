@@ -86,3 +86,21 @@ for dataset in combined_df:
     dataset['Title'] = dataset['Title'].fillna(0)
 
 train_df = train_df.drop(['Name', 'PassengerId'], axis=1)
+test_df = test_df.drop(['Name'], axis=1)
+combined_df = [train_df, test_df]
+
+train_df.shape, test_df.shape
+
+for  dataset in combined_df:
+    dataset['Sex'] = dataset['Sex'].map({'female': 1 , 'male': 0}).astype(int)
+
+grid = sns.FacetGrid(train_df, row='Pclass', col='Sex', size=2.2, aspect=1.6)
+grid.map(plt.hist, 'Age', alpha=0.5, bins=20)
+grid.add_legend()
+
+guess_ages = np.zeros((2,3))
+
+for dataset in combined_df:
+    for i in range(0,2):
+        for j in range(0,3):
+            guess_df = dataset([(dataset['Sex']==i) & (dataset[])])
