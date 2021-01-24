@@ -116,7 +116,7 @@ for dataset in combined_df:
     dataset['Age'] = dataset['Age'].astype(int)
 
 train_df['AgeBand'] = pd.cut(train_df['Age'], 5)
-train_df[['AgeBand', 'Survived']].groupby(['AgeBand'], as_index=Falsel).mean().sort_values(by='AgeBand', ascending=True)
+train_df[['AgeBand', 'Survived']].groupby(['AgeBand'], as_index=False).mean().sort_values(by='AgeBand', ascending=True)
 
 for dataset in combined_df:
     dataset.loc[ dataset['Age'] <= 16, 'Age'] = 0
@@ -132,4 +132,15 @@ combined_df = [train_df, test_df]
 for dataset in combined_df:
     dataset['FamilySize'] = dataset['SibSp'] + dataset['Parch'] + 1
 
-train_  
+train_df[['FamilySize', 'Survived']].groupby(['FamilySize'], as_index=False).mean()\
+            .sort_values(by='Survived', ascending=False)
+
+for dataset in combined_df:
+    dataset['IsAlone'] = 0
+    dataset.loc[dataset['FamilySize'] == 1, 'IsAlone'] = 1
+
+train_df[['IsAlone', 'Survived']].groupby(['IsAlone'], as_index=False).mean()
+
+train_df = train_df.drop(['Parch', 'SibSp', 'FamilySize'], axis=1)
+test_df = test_df.drop(['Parch', 'SibSp', 'FamilySize'], axis=1)
+combined_df = [train_df, test_df]
