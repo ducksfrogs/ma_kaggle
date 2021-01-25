@@ -144,3 +144,22 @@ train_df[['IsAlone', 'Survived']].groupby(['IsAlone'], as_index=False).mean()
 train_df = train_df.drop(['Parch', 'SibSp', 'FamilySize'], axis=1)
 test_df = test_df.drop(['Parch', 'SibSp', 'FamilySize'], axis=1)
 combined_df = [train_df, test_df]
+
+for dataset in combined_df:
+    dataset['Age*Class'] = dataset.Age * dataset.Pclass
+
+train_df.loc[:, ['Age*Class', 'Age', 'Pclass']].head(10)
+
+freq_port = train_df.Embarked.dropna().mode()[0]
+
+for dataset in combined_df:
+    dataset['Embarked'] = dataset['Embarked'].fillna(freq_port)
+
+train_df[['Embarked','Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False)
+
+for dataset in combined_df:
+    dataset['Embarked'] = dataset['Embarked'].map({'S':0, 'C':1, 'Q':2}).astype(int)
+
+test_df['Fare'].fillna(test_df['Fare'].dropna().median(), inplace=True)
+
+train_d
