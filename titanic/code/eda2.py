@@ -182,3 +182,50 @@ train_df.head()
 
 X_train = train_df.drop("Survived", axis=1)
 y_train = train_df['Survivedr']
+X_test = test_df.drop("PassengerId", axis=1).copy()
+
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+y_pred = lr.predict(X_test)
+acc_log = round(lr.score(X_train, y_train)*100, 2)
+
+coef_df = pd.DataFrame(train_df.columns.delete(0))
+coef_df.columns = ['Feature']
+coef_df['Correlation'] = pd.Series(lr.coef_[0])
+
+coef_df.sort_values(by='Correlation', ascending=False)
+
+
+svc = SVC()
+svc.fit(X_train, y_train)
+y_pred = svc.predict(X_test)
+acc_svc = round(svc.score(X_train, y_train)*100, 2)
+acc_svc
+
+knn = KNeighborsClassifier()
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+acc_knn = round(knn.score(X_train, y_train), *100, 2)
+acc_knn
+
+gaussian = GaussianNB()
+gaussian.fit(X_train, y_train)
+y_pred = gaussian.predict(X_test)
+acc_gaussian = round(gaussian.score(X_train, y_train)*100, 2)
+acc_gaussian
+
+perceptoron = Perceptron()
+perceptoron.fit(X_train, y_train)
+y_pred = perceptoron.predict(X_test)
+acc_perceptoron = round(perceptoron.score(X_train, y_train)*100, 2)
+acc_perceptoron
+
+from sklearn.svm import LinearSVC
+
+linear_svc = LinearSVC()
+linear_svc.fit(X_train, y_train)
+y_pred = linear_svc.predict(X_test)
+acc_linear_svc = round(linear_svc.score(X_train, y_train)*100, 2)
+acc_linear_svc
+
+sgd = SGDClassifier()
