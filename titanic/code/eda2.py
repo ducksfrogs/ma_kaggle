@@ -162,4 +162,23 @@ for dataset in combined_df:
 
 test_df['Fare'].fillna(test_df['Fare'].dropna().median(), inplace=True)
 
-train_d
+train_df['FareBand'] = pd.qcut(train_df['Fare'], 4)
+train_df[['FareBand', 'Survived']].groupby(['FareBand'], as_index=False)\
+                .mean().sort_values(by='FareBand', ascending=True)
+
+for dataset in combined_df:
+    dataset.loc[ dataset['Fare'] <= 7.91, 'Fare'] = 0
+    dataset.loc[(dataset['Fare'] > 7.91) & (dataset['Fare'] <= 14.454), 'Fare'] = 1
+    dataset.loc[(dataset['Fare'] > 14.454) & (dataset['Fare'] <=31), 'Fare'] = 2
+    dataset.loc[ dataset['Fare'] > 31, 'Fare'] = 3
+    dataset['Fare'] = dataset['Fare'].astype(int)
+
+train_df = train_df.drop(['FareBand'], axis=1)
+combine = [train_df, test_df]
+
+train_df.head()
+
+#model
+
+X_train = train_df.drop("Survived", axis=1)
+y_train = train_df['Survivedr']
