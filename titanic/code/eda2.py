@@ -228,4 +228,35 @@ y_pred = linear_svc.predict(X_test)
 acc_linear_svc = round(linear_svc.score(X_train, y_train)*100, 2)
 acc_linear_svc
 
+from sklearn.linear_model import SGDClassifier
 sgd = SGDClassifier()
+
+sgd.fit(X_train, y_train)
+y_pred = sgd.predict(X_test)
+acc_sgd = round(sgd.score(X_train, y_train)*100, 2)
+acc_sgd
+
+decision_tree = DecisionTreeClassifier()
+decision_tree.fit(X_train, y_train)
+y_pred = decision_tree.predict(X_test)
+acc_decision_tree = round(decision_tree.score(X_train, y_train)*100, 2)
+acc_decision_tree
+
+random_forest = RandomForestClassifier()
+random_forest.fit(X_train, y_train)
+y_pred = random_forest.predict(X_test)
+random_forest.score(X_train, y_train)
+acc_random_foreset = round(random_forest.score(X_train, y_train)*100, 2)
+acc_random_foreset
+
+models = pd.DataFrame({
+    'Model':['Support Vector Machines', 'KNN', 'Logistic Regression', 'Random Forest', "Naive Bayse", \
+            'Perceptron', "Stochastic Gradieant Decent", 'Liniear SVC', 'Decision Tree'],
+    'Score': [acc_svc, acc_knn, acc_log, acc_random_foreset, acc_gaussian, acc_perceptoron, acc_sgd,\
+            acc_linear_svc, acc_decision_tree]})
+
+
+submission = pd.DataFrame({
+    "PassengerId": test_df["PassengerId"],
+    "Survived": y_pred
+})
