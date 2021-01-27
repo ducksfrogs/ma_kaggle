@@ -35,3 +35,10 @@ data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
 f, ax = plt.subplots(figsize=(16,8))
 fig = sns.boxplot(x=var, y='SalePrice', data=data)
 fig.axes(ymin=0, ymax=8000000)
+
+corrmat = df_train.corr()
+f, ax = plt.subplots(figsize=(12,9))
+sns.heatmap(corrmat, vmax=.8, square=True)
+
+ k = 10
+ 
