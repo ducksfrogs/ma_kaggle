@@ -57,3 +57,5 @@ sns.pairplot(df_train[cols], size=2.5)
 total = df_train.isnull().sort_values(ascending=False)
 percent = (df_train.isnull().sum()/df_train.isnull().count()).sort_values(ascending=False)
 missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+
+salesprice_scaled = StandardScaler().fit_transform(df_train['SalePrice'][:,np.newaxis])
