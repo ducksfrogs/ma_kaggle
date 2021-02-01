@@ -58,4 +58,8 @@ total = df_train.isnull().sort_values(ascending=False)
 percent = (df_train.isnull().sum()/df_train.isnull().count()).sort_values(ascending=False)
 missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
 
+df_train = df_train.drop((missing_data[missing_data['Total']>1]).index, 1)
+df_train = df_train.drop(df_train.loc[df_train["Electrical"].isnull()].index)
+df_train.isnull().sum().max()
+
 salesprice_scaled = StandardScaler().fit_transform(df_train['SalePrice'][:,np.newaxis])
