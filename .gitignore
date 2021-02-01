@@ -93,3 +93,4 @@ ipython_config.py
 .virtual_documents/
 venv/
 .idea
+input/
