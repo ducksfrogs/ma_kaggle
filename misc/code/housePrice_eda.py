@@ -25,3 +25,15 @@ data.plot.scatter(x=var, y='SalePrice', ylim=(0, 8000000))
 var = 'TotalBsmtSF'
 data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
 plt.scatter(x=var, y='SalePrice', data=data, ylim=(0, 800000))
+
+var = 'OverallQual'
+data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
+f, ax = plt.subplots(figsize=(8,6))
+fig = sns.boxplot(x=var, y='SalePrice', data=data)
+fig.axis(ymin=0, ymax=800000)
+
+var = 'YearBuilt'
+data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
+fig = sns.boxplot(x=var, y='SalePrice', data=data)
+fig.axis(ymin=0, ymax=800000)
+plt.xticks(rotation=90)
