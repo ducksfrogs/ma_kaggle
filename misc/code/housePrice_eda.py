@@ -37,3 +37,23 @@ data = pd.concat([df_train['SalePrice'], df_train[var]], axis=1)
 fig = sns.boxplot(x=var, y='SalePrice', data=data)
 fig.axis(ymin=0, ymax=800000)
 plt.xticks(rotation=90)
+
+corrmat = df_train.corr()
+f, ax = plt.subplots(figsize=(12,9))
+sns.heatmap(corrmat, vmax=0.8, square=True)
+
+k = 10
+cols = corrmat.nlargest(k, "SalePrice")['SalePrice'].index
+cm = np.corrcoef(df_train[cols].values.T)
+sns.set(font_scale=1.25)
+hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size':10}, yticklabels=cols.values, xticklabels=cols.values)
+
+sns.set()
+cols = ['SalePrice','OverallQual', 'GrLivArea','GarageCars', 'TotalBsmtSF','FullBath', 'YearBuilt']
+sns.pairplot(df_train[cols], size=2.5)
+
+#Missing data
+
+total = df_train.isnull().sort_values(ascending=False)
+percent = (df_train.isnull().sum()/df_train.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
