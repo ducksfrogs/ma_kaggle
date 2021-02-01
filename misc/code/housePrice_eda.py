@@ -62,4 +62,17 @@ df_train = df_train.drop((missing_data[missing_data['Total']>1]).index, 1)
 df_train = df_train.drop(df_train.loc[df_train["Electrical"].isnull()].index)
 df_train.isnull().sum().max()
 
+
+#Out liars
+
 salesprice_scaled = StandardScaler().fit_transform(df_train['SalePrice'][:,np.newaxis])
+low_range = salesprice_scaled[salesprice_scaled[:,0].argsort()][:10]
+high_range = salesprice_scaled[salesprice_scaled[;,0].argsort()][-10:]
+print("out range (low) of the distribution: ")
+print(low_range)
+print("out range (high) of the distribution: ")
+print(high_range)
+
+df_train.sort_values(by='GrLivArea', ascending=False)[:2]
+df_train = df_train.drop(df_train[df_train['Id'] == 1299].index)
+df_train = df_train.drop(df_train[df_train['Id'] == 524].index)
