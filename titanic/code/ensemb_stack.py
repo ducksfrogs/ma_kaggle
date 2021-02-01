@@ -121,7 +121,7 @@ sns.heatmap(train.astype(float).corr(), linewidths=0.1, vmax=1.0,
 
 g = sns.pairplot(train[[u'Survived', u'Pclass', u'Sex', u'Age', u'Parch',
                         u'Fare', u'Embarked', u'FamilySize', u'Title']], hue='Survived',
-                        palette='seismic', size=1.2, diag_kind='kde', diag_kws=dict(shade=True,
+                        palette='seismic', height=1.2, diag_kind='kde', diag_kws=dict(shade=True),
                         plot_kws=dict(s=10))
 g.set(xticklabels=[])
 
@@ -132,7 +132,8 @@ ntrain = train.shape[0]
 ntest = test.shape[0]
 SEED = 0
 NFOLDS = 5
-kf = KFold(ntrain, n_folds=NFOLDS, random_state=SEED)
+kf = KFold(n_splits=NFOLDS)
+kf.get_n_splits(train)
 
 class SklernHelper(object):
     def __init__(self, clf, seed=0, params=None):
@@ -159,7 +160,7 @@ def get_oof(clf, x_train, y_train, x_test):
     oof_test = np.zeros((ntest,))
     oof_test_skf = np.empty((NFOLDS, ntest))
 
-    for i, (train_index, test_index) in enumerate(kf):
+    for i, (train_index, test_index) in enumerate(kf.split(train)):
         x_tr = x_train[train_index]
         y_tr = y_train[train_index]
         x_te = x_train[test_index]
@@ -214,7 +215,7 @@ rf = SklernHelper(clf=RandomForestClassifier, seed=SEED, params=rf_params)
 et = SklernHelper(clf=ExtraTreesClassifier, seed = SEED, params=et_params)
 ada = SklernHelper(clf=AdaBoostClassifier,seed= SEED, params= ada_params)
 gb = SklernHelper(clf=GradientBoostingClassifier, seed=SEED, params= gb_params)
-svv = SklernHelper(clf=SVC, seed=SEED, params= svc_params)
+svc = SklernHelper(clf=SVC, seed=SEED, params= svc_params)
 
 
 y_train = train['Survived'].ravel()
