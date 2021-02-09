@@ -109,3 +109,89 @@ g = sns.pairplot(train[[u'Survived', u'Pclass', u'Sex', u'Age', u'Parch',
                     u'Fare', u'Embarked', u'FamilySize', u'Title']], hue='Survived',palette='seismic',
                     size=1.2, diag_kind='kde', diag_kws=dict(shade=True), plot_kws=dict(s=10))
 g.set(xticklabels=[])
+
+
+ntrain = train.shape[0]
+ntest = test.shape[0]
+
+SEED = 0
+NFOLDS = 5
+kf = KFold(n_splits=NFOLDS )
+kf.get_n_splits(ntrain)
+
+class SklernHelper(object):
+
+    def __init__(self, clf, seed=0, params=None):
+        params['random_state'] = seed
+        self.clf = clf(**params)
+
+    def train(self, x_train, y_train):
+        self.clf.fit(x_train, y_train)
+
+    def predict(self, x):
+        return self.clf.predict(x)
+
+    def fit(self, x, y):
+        return self.clf.fit(x, y)
+
+    def feature_importances(self, x, y):
+        print(self.clf.fit(x, y).feature_importances_)
+
+
+
+def get_oof(clf, x_train, y_train, x_test):
+    oof_train = np.zeros((ntrain,))
+    oof_test = np.zeros((ntest,))
+    oof_test_skf = np.empty((NFOLDS, ntest))
+
+    for i, (train_index, test_index) in enumerate(kf.split(ntrain)):
+        x_tr = x_train[train_index]
+        x_tr = y_train[train_index]
+        x_te = x_train[test_index]
+
+        clf.train(x_tr, y_tr)
+
+        oof_train[test_index] = clf.predict(x_te)
+        oof_test_skf[i, :] = clf.predict(x_test)
+
+    oof_test[:] = oof_test_skf.mean(axis=0)
+    return oof_train.reshape(-1,1), oof_test.reshape(-1,1)
+
+
+rf_params = {
+    'n_jobs' : -1,
+    'n_estimators': 500,
+    'max_depth': 6,
+    'min_samples_leaf': 2,
+    'max_features': 'sqrt',
+    'verbose': 0
+}
+
+et_params = {
+    'n_jobs': -1,
+    'n_estimators': 500,
+    'max_depth': 8,
+    'min_samples_leaf': 2,
+    'verbose': 0
+}
+
+ada_params = {
+ 'n_estimators': 500,
+ 'learning_rate': 0.75
+}
+
+rf = SklernHelper(clf=RandomForestClassifier, seed=SEED, params=rf_params)
+
+et = SklernHelper(clf=ExtraTreesClassifier, seed=SEED, params=et_params)
+
+ada = SklernHelper(clf=AdaBoostClassifier, seed=SEED, params=ada_params)
+
+
+y_train = train['Survived'].ravel()
+train = train.drop(['Survived'], axis=1)
+x_train =train.values
+x_test = test.values
+
+et_oof_train, et_oof_test = get_oof(et, x_train, y_train, x_test)
+rf_oof_train, rf_oof_test = get_oof(rf, x_train, y_train, x_test)
+ada_oof_train, ada_oof_test = get_oof(ada, x_train, y_train, x_test)
