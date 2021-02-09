@@ -117,7 +117,7 @@ ntest = test.shape[0]
 SEED = 0
 NFOLDS = 5
 kf = KFold(n_splits=NFOLDS )
-kf.get_n_splits(ntrain)
+splited = kf.split(train)
 
 class SklernHelper(object):
 
