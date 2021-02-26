@@ -11,4 +11,22 @@ from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.statespace import SARIMAX
 from pandas.plotting import autocorrelation_plot
 
-from statsmodels.tsa.stattools import adfuller, acf, pacf
+from statsmodels.tsa.stattools import adfuller, acf, pacf, arma_order_select_ic
+import statsmodels.formula.api as smf
+import statsmodels.tsa.api as smt
+import statsmodels.api as sm
+import scipy.stats as scs
+
+import warnings
+warnings.filterwarnings('ignore')
+
+sales = pd.read_csv("../input/sales_train.csv")
+
+item_cat = pd.read_csv("../input/item_categories.csv")
+item = pd.read_csv("../input/items.csv")
+sub = pd.read_csv("../input/sample_submission.csv")
+shops = pd.read_csv("../input/shops.csv")
+test = pd.read_csv("../input/test.csv")
+
+
+sales.date = sales.date.apply(lambda x: datetime.datetime.strptime(x, '%d.%m.%Y')) 
